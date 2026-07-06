@@ -6,7 +6,6 @@ const baseMovimientoSchema = {
     .min(1, 'La fecha es obligatoria')
     .refine((value) => !Number.isNaN(new Date(value).getTime()), 'Fecha inválida'),
   personaId: z.string().min(1, 'Selecciona quién realiza el movimiento'),
-  fondoId: z.string().min(1, 'Selecciona un fondo'),
   descripcion: z
     .string()
     .trim()
@@ -18,10 +17,13 @@ const baseMovimientoSchema = {
     .max(999999999, 'El valor es demasiado alto'),
 }
 
+// El aporte ya no elige fondo: el valor se reparte automáticamente entre
+// los tres fondos con porcentajes fijos (ver APORTE_DISTRIBUCION).
 export const aporteSchema = z.object({ ...baseMovimientoSchema })
 
 export const gastoSchema = z.object({
   ...baseMovimientoSchema,
+  fondoId: z.string().min(1, 'Selecciona un fondo'),
   categoria: z.string().min(1, 'Selecciona una categoría'),
 })
 

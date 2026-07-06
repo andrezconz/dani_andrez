@@ -46,6 +46,28 @@ export function getFondoDisplay(fondo) {
   return FONDO_DISPLAY[fondo?.tipo] ?? { nombre: fondo?.nombre ?? 'Fondo', icono: '💼', color: 'sand' }
 }
 
+// Todo aporte se distribuye de forma fija entre los tres fondos: no se elige
+// un fondo al registrar, el valor ingresado se reparte según estos porcentajes.
+export const APORTE_DISTRIBUCION = [
+  { tipoFondo: TIPO_FONDO.GASTOS_MENSUALES, porcentaje: 0.6 },
+  { tipoFondo: TIPO_FONDO.AHORRO, porcentaje: 0.25 },
+  { tipoFondo: TIPO_FONDO.EMERGENCIA, porcentaje: 0.15 },
+]
+
+// Reparte `valor` según APORTE_DISTRIBUCION. Los dos primeros fondos se
+// redondean y el último recibe el remanente, así la suma siempre da exacto.
+export function distribuirAporte(valor) {
+  const total = Number(valor) || 0
+  let acumulado = 0
+
+  return APORTE_DISTRIBUCION.map((item, index) => {
+    const esUltimo = index === APORTE_DISTRIBUCION.length - 1
+    const monto = esUltimo ? total - acumulado : Math.round(total * item.porcentaje)
+    acumulado += monto
+    return { ...item, valor: monto }
+  })
+}
+
 // Igual que con los fondos: en Supabase las personas se llaman "Persona 1" y
 // "Persona 2"; aquí solo se traduce la presentación visual (avatar + nombre
 // cercano) sin tocar los datos.

@@ -37,19 +37,19 @@ export async function getMovimientos(filters = {}) {
   return data
 }
 
-export async function createAporte({ fecha, personaId, fondoId, valor, descripcion }) {
-  const { data, error } = await supabase
-    .from('movimientos')
-    .insert({
+export async function createAporte({ fecha, personaId, fondos, descripcion }) {
+  const filas = fondos
+    .filter((fondo) => fondo.valor > 0)
+    .map((fondo) => ({
       tipo: 'aporte',
       fecha,
       persona_id: personaId,
-      fondo_id: fondoId,
-      valor,
+      fondo_id: fondo.fondoId,
+      valor: fondo.valor,
       descripcion,
-    })
-    .select(SELECT_CON_RELACIONES)
-    .single()
+    }))
+
+  const { data, error } = await supabase.from('movimientos').insert(filas).select(SELECT_CON_RELACIONES)
 
   if (error) throw new Error(`No se pudo registrar el aporte: ${error.message}`)
   return data

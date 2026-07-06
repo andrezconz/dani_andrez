@@ -7,7 +7,8 @@ import { useCategorias } from '../hooks/useCategorias'
 import { useToast } from '../hooks/useToast'
 import { createAporte, createGasto } from '../services/movimientosService'
 import { aporteSchema, gastoSchema } from '../utils/validators'
-import { getFondoDisplay, getPersonaDisplay, TIPO_MOVIMIENTO } from '../constants'
+import { distribuirAporte, getFondoDisplay, getPersonaDisplay, TIPO_MOVIMIENTO } from '../constants'
+import { formatCurrency, formatPercent } from '../utils/formatters'
 import { Spinner } from '../components/ui/Spinner'
 import { ErrorMessage } from '../components/ui/ErrorMessage'
 import { Input } from '../components/ui/Input'
@@ -53,9 +54,11 @@ export function RegistrarPage() {
   const [submitting, setSubmitting] = useState(false)
 
   const steps = useMemo(() => {
-    const base = ['tipo', 'persona', 'fondo']
-    if (values.tipo === TIPO_MOVIMIENTO.GASTO) base.push('categoria')
-    return [...base, 'valor', 'descripcion']
+    if (values.tipo === TIPO_MOVIMIENTO.GASTO) {
+      return ['tipo', 'persona', 'fondo', 'categoria', 'valor', 'descripcion']
+    }
+    // El aporte no elige fondo: se reparte automáticamente (ver APORTE_DISTRIBUCION).
+    return ['tipo', 'persona', 'valor', 'descripcion']
   }, [values.tipo])
 
   const currentStep = steps[stepIndex]
@@ -86,7 +89,11 @@ export function RegistrarPage() {
       if (values.tipo === TIPO_MOVIMIENTO.GASTO) {
         await createGasto(result.data)
       } else {
-        await createAporte(result.data)
+        const fondosDistribuidos = distribuirAporte(result.data.valor).map((item) => ({
+          fondoId: fondos.find((fondo) => fondo.tipo === item.tipoFondo)?.id,
+          valor: item.valor,
+        }))
+        await createAporte({ ...result.data, fondos: fondosDistribuidos })
       }
       showToast('Movimiento registrado correctamente ✨')
       navigate('/')
@@ -219,6 +226,24 @@ export function RegistrarPage() {
             value={values.valor}
             onChange={(event) => setValues((current) => ({ ...current, valor: event.target.value }))}
           />
+          {values.tipo === TIPO_MOVIMIENTO.APORTE && Number(values.valor) > 0 && (
+            <div className="mt-4 flex flex-col gap-2 rounded-app border border-border bg-card p-4">
+              <p className="text-xs font-medium text-ink-muted">Este aporte se reparte así:</p>
+              {distribuirAporte(values.valor).map((item) => {
+                const display = getFondoDisplay({ tipo: item.tipoFondo })
+                return (
+                  <div key={item.tipoFondo} className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 font-medium text-ink">
+                      <span>{display.icono}</span>
+                      {display.nombre}
+                      <span className="text-ink-muted">({formatPercent(item.porcentaje * 100)})</span>
+                    </span>
+                    <span className="font-semibold text-ink">{formatCurrency(item.valor)}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
           <Button
             className="mt-4 w-full"
             disabled={!values.valor || Number(values.valor) <= 0}
