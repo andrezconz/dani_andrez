@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import clsx from 'clsx'
+import { cn } from '../../utils/cn'
 
 export const Select = forwardRef(function Select(
   { label, error, className, id, children, placeholder, ...props },
@@ -8,20 +8,20 @@ export const Select = forwardRef(function Select(
   const selectId = id || props.name
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={selectId} className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label htmlFor={selectId} className="text-sm font-medium text-ink">
           {label}
         </label>
       )}
       <select
         id={selectId}
         ref={ref}
-        className={clsx(
-          'rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm',
-          'focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500',
-          'dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100',
-          error && 'border-red-400 focus:border-red-500 focus:ring-red-500',
+        className={cn(
+          'rounded-app border border-border bg-card px-4 py-3 text-base text-ink',
+          'focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage/30',
+          'transition-colors duration-[250ms]',
+          error && 'border-error focus:border-error focus:ring-error/30',
           className,
         )}
         {...props}
@@ -33,7 +33,7 @@ export const Select = forwardRef(function Select(
         )}
         {children}
       </select>
-      {error && <span className="text-xs text-red-600 dark:text-red-400">{error}</span>}
+      {error && <span className="text-xs font-medium text-error">{error}</span>}
     </div>
   )
 })

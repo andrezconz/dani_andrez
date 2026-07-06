@@ -1,19 +1,17 @@
-import clsx from 'clsx'
+import { cn } from '../../utils/cn'
 
 const VARIANTS = {
-  primary:
-    'bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600 disabled:bg-indigo-300',
+  primary: 'bg-sage text-white hover:bg-sage/90 active:scale-[0.98] disabled:bg-sage/50',
   secondary:
-    'bg-white text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-600 dark:hover:bg-slate-700',
-  danger: 'bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600',
-  ghost:
-    'bg-transparent text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800',
+    'bg-card text-ink ring-1 ring-inset ring-border hover:bg-sage-soft active:scale-[0.98]',
+  danger: 'bg-error text-white hover:bg-error/90 active:scale-[0.98]',
+  ghost: 'bg-transparent text-ink-muted hover:bg-sage-soft active:scale-[0.98]',
 }
 
 const SIZES = {
-  sm: 'px-2.5 py-1.5 text-sm',
-  md: 'px-4 py-2 text-sm',
-  lg: 'px-5 py-2.5 text-base',
+  sm: 'px-3 py-1.5 text-sm',
+  md: 'px-5 py-2.5 text-sm',
+  lg: 'px-6 py-3.5 text-base',
 }
 
 export function Button({
@@ -26,10 +24,11 @@ export function Button({
   return (
     <button
       type={type}
-      className={clsx(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-medium shadow-sm transition-colors',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
-        'disabled:cursor-not-allowed disabled:opacity-60',
+      className={cn(
+        'inline-flex items-center justify-center gap-2 rounded-pill font-semibold shadow-softer',
+        'transition-all duration-[250ms] ease-out',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage',
+        'disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100',
         VARIANTS[variant],
         SIZES[size],
         className,

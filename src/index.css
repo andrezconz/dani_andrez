@@ -3,7 +3,61 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* Superficie */
+  --color-bg: #faf8f5;
+  --color-card: #ffffff;
+  --color-ink: #2e2e2e;
+  --color-ink-muted: #6b7280;
+  --color-border: #ece6dc;
+
+  /* Marca */
+  --color-sage: #7d9d7c;
+  --color-sage-soft: #e4ebe1;
+  --color-sand: #d9c7a3;
+  --color-sand-soft: #f3ecdd;
+
+  /* Fondos (Hogar, Sueños, Tranquilidad) */
+  --color-hogar: #ffb74d;
+  --color-hogar-soft: #fff1dc;
+  --color-suenos: #81c784;
+  --color-suenos-soft: #e7f5e6;
+  --color-tranquilidad: #64b5f6;
+  --color-tranquilidad-soft: #e5f2fe;
+
+  /* Estados */
+  --color-error: #ef5350;
+  --color-error-soft: #fce7e6;
+  --color-success: #66bb6a;
+  --color-success-soft: #e7f5e7;
+
+  --radius-app: 20px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 8px 24px -8px rgb(46 46 46 / 0.12);
+  --shadow-softer: 0 2px 10px -2px rgb(46 46 46 / 0.08);
+}
+
+.dark {
+  --color-bg: #201c17;
+  --color-card: #2a2521;
+  --color-ink: #f3ede4;
+  --color-ink-muted: #b8afa2;
+  --color-border: #38322b;
+
+  --color-sage-soft: #28362a;
+  --color-sand-soft: #332c22;
+
+  --color-hogar-soft: #3a2e1e;
+  --color-suenos-soft: #23301f;
+  --color-tranquilidad-soft: #1e2b33;
+
+  --color-error-soft: #3a2323;
+  --color-success-soft: #223026;
+
+  --shadow-soft: 0 8px 24px -8px rgb(0 0 0 / 0.5);
+  --shadow-softer: 0 2px 10px -2px rgb(0 0 0 / 0.35);
 }
 
 html,
@@ -13,9 +67,64 @@ body,
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
 }
 
 * {
   scrollbar-width: thin;
+}
+
+/* Oculta la barra de desplazamiento de los carruseles de chips sin perder el scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes celebration-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes celebration-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1.1);
+  }
 }

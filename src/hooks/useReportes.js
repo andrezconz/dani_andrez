@@ -1,15 +1,17 @@
 import { useCallback, useMemo } from 'react'
 import { eachMonthOfInterval, endOfMonth, format, startOfMonth, subMonths } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { TIPO_MOVIMIENTO } from '../constants'
+import { TIPO_MOVIMIENTO, getFondoDisplay, getPersonaDisplay } from '../constants'
 import { getMovimientosEnRango } from '../services/reportesService'
 import { useAsyncData } from './useAsyncData'
 import { useFondos } from './useFondos'
 import { useCategorias } from './useCategorias'
+import { usePersonas } from './usePersonas'
 
 export function useReportes(mesesAtras = 6) {
   const { fondos } = useFondos()
   const { categorias } = useCategorias()
+  const { personas } = usePersonas()
 
   const rango = useMemo(() => {
     const hoy = new Date()
@@ -79,16 +81,30 @@ export function useReportes(mesesAtras = 6) {
       }
       const punto = { mes: format(mesDate, 'MMM yyyy', { locale: es }) }
       for (const fondo of fondos) {
-        punto[fondo.nombre] = saldosPorFondo.get(fondo.fondo_id) || 0
+        punto[getFondoDisplay(fondo).nombre] = saldosPorFondo.get(fondo.fondo_id) || 0
       }
       return punto
     })
   }, [movimientos, fondos, rango.meses])
 
+  const aportesPorPersona = useMemo(() => {
+    if (!movimientos) return []
+    const totales = new Map()
+    for (const mov of movimientos) {
+      if (mov.tipo !== TIPO_MOVIMIENTO.APORTE) continue
+      totales.set(mov.persona_id, (totales.get(mov.persona_id) || 0) + Number(mov.valor))
+    }
+    return personas.map((persona) => ({
+      persona: `${getPersonaDisplay(persona).avatar} ${getPersonaDisplay(persona).nombre}`,
+      valor: totales.get(persona.id) || 0,
+    }))
+  }, [movimientos, personas])
+
   return {
     evolucionMensual,
     gastosPorCategoria,
     evolucionPorFondo,
+    aportesPorPersona,
     categorias,
     loading,
     error,

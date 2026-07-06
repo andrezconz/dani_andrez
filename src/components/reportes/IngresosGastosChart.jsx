@@ -1,24 +1,23 @@
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Card, CardHeader } from '../ui/Card'
+import { ChartCard } from './ChartCard'
 import { formatCurrency } from '../../utils/formatters'
 
 export function IngresosGastosChart({ data }) {
   return (
-    <Card>
-      <CardHeader title="Ingresos vs. gastos" subtitle="Últimos meses" />
-      <div className="h-72 w-full">
+    <ChartCard title="📊 Ingresos vs. gastos" subtitle="Últimos meses">
+      <div className="h-64 w-full">
         <ResponsiveContainer>
           <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-800" />
-            <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
-            <YAxis tickFormatter={(value) => formatCurrency(value)} width={90} tick={{ fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+            <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
+            <YAxis tickFormatter={(value) => formatCurrency(value)} width={80} tick={{ fontSize: 10 }} />
             <Tooltip formatter={(value) => formatCurrency(value)} />
-            <Legend />
-            <Bar dataKey="ingresos" name="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="gastos" name="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Bar dataKey="ingresos" name="Ingresos" fill="#81C784" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="gastos" name="Gastos" fill="#FFB74D" radius={[8, 8, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </Card>
+    </ChartCard>
   )
 }

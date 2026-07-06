@@ -1,33 +1,32 @@
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Card, CardHeader } from '../ui/Card'
-import { CHART_COLORS } from '../../constants'
+import { ChartCard } from './ChartCard'
+import { getFondoDisplay, CHART_COLORS } from '../../constants'
 import { formatCurrency } from '../../utils/formatters'
 
 export function EvolucionFondosChart({ data, fondos }) {
   return (
-    <Card>
-      <CardHeader title="Movimiento neto por fondo" subtitle="Aportes menos gastos, por mes" />
-      <div className="h-72 w-full">
+    <ChartCard title="🌱 Movimiento neto por fondo" subtitle="Aportes menos gastos, por mes">
+      <div className="h-64 w-full">
         <ResponsiveContainer>
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-800" />
-            <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
-            <YAxis tickFormatter={(value) => formatCurrency(value)} width={90} tick={{ fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+            <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
+            <YAxis tickFormatter={(value) => formatCurrency(value)} width={80} tick={{ fontSize: 10 }} />
             <Tooltip formatter={(value) => formatCurrency(value)} />
-            <Legend />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
             {fondos.map((fondo, index) => (
               <Line
                 key={fondo.id}
                 type="monotone"
-                dataKey={fondo.nombre}
+                dataKey={getFondoDisplay(fondo).nombre}
                 stroke={CHART_COLORS[index % CHART_COLORS.length]}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
               />
             ))}
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </Card>
+    </ChartCard>
   )
 }

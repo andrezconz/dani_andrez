@@ -1,21 +1,38 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AppLayout } from '../components/layout/AppLayout'
-import { DashboardPage } from '../pages/DashboardPage'
-import { AportesPage } from '../pages/AportesPage'
-import { GastosPage } from '../pages/GastosPage'
-import { MovimientosPage } from '../pages/MovimientosPage'
-import { ReportesPage } from '../pages/ReportesPage'
+import { Spinner } from '../components/ui/Spinner'
+
+const DashboardPage = lazy(() =>
+  import('../pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+)
+const RegistrarPage = lazy(() =>
+  import('../pages/RegistrarPage').then((m) => ({ default: m.RegistrarPage })),
+)
+const MovimientosPage = lazy(() =>
+  import('../pages/MovimientosPage').then((m) => ({ default: m.MovimientosPage })),
+)
+const ReportesPage = lazy(() =>
+  import('../pages/ReportesPage').then((m) => ({ default: m.ReportesPage })),
+)
+const AjustesPage = lazy(() =>
+  import('../pages/AjustesPage').then((m) => ({ default: m.AjustesPage })),
+)
+
+function withSuspense(element) {
+  return <Suspense fallback={<Spinner />}>{element}</Suspense>
+}
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
     children: [
-      { index: true, element: <DashboardPage /> },
-      { path: 'aportes', element: <AportesPage /> },
-      { path: 'gastos', element: <GastosPage /> },
-      { path: 'movimientos', element: <MovimientosPage /> },
-      { path: 'reportes', element: <ReportesPage /> },
+      { index: true, element: withSuspense(<DashboardPage />) },
+      { path: 'registrar', element: withSuspense(<RegistrarPage />) },
+      { path: 'movimientos', element: withSuspense(<MovimientosPage />) },
+      { path: 'reportes', element: withSuspense(<ReportesPage />) },
+      { path: 'ajustes', element: withSuspense(<AjustesPage />) },
     ],
   },
 ])

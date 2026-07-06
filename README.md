@@ -1,28 +1,34 @@
-# Finanzas de Pareja
+# Nuestro Hogar
 
-Aplicación web de finanzas personales para administrar tres fondos independientes
-(Gastos Mensuales, Ahorro y Fondo de Emergencia) entre dos personas.
+Aplicación web de finanzas personales para Dani y Andrez, con tres fondos
+independientes: 🏡 Hogar, 🌱 Sueños y 🛟 Tranquilidad.
 
-Stack: **React + Vite + Tailwind CSS**, base de datos **Supabase (Postgres)**, despliegue en **Netlify**.
+Los nombres "Hogar/Sueños/Tranquilidad" y "Dani/Andrez" son solo una capa de
+presentación (ver `getFondoDisplay` / `getPersonaDisplay` en
+[`src/constants/index.js`](src/constants/index.js)): en Supabase las filas
+siguen llamándose "Gastos Mensuales/Ahorro/Fondo de Emergencia" y
+"Persona 1/Persona 2", así que no hace falta tocar la base de datos.
+
+Stack: **React + Vite + Tailwind CSS v4**, base de datos **Supabase (Postgres)**, despliegue en **Netlify**.
 
 ## Estructura del proyecto
 
 ```
 src/
   components/
-    ui/          Componentes genéricos reutilizables (Button, Card, Input, Modal...)
-    layout/      AppLayout, Navbar, Sidebar, ThemeToggle
-    dashboard/   Tarjetas y widgets del dashboard
-    movimientos/ Formularios (AporteForm, GastoForm), tabla y filtros de historial
-    reportes/    Gráficos (recharts)
-  pages/         Una página por ruta (Dashboard, Aportes, Gastos, Movimientos, Reportes)
-  hooks/         Hooks de datos (useFondos, useMovimientos, useDashboard, useReportes...)
+    ui/          Componentes genéricos reutilizables (Button, Card, Input, Modal, Toast...)
+    layout/      AppLayout, Header, BottomNavigation, ThemeToggle
+    dashboard/   GreetingCard, QuoteCard, BalanceCard, FundCard, TransferCard, ProgressCard
+    movimientos/ TransactionCard y filtros del historial
+    reportes/    ChartCard + gráficos (recharts)
+  pages/         Una página por ruta (Dashboard, Registrar, Movimientos, Reportes, Ajustes)
+  hooks/         Hooks de datos (useFondos, useMovimientos, useDashboard, useReportes, useToast...)
   services/      Llamadas a Supabase, aisladas de la UI
-  context/       ThemeContext (modo oscuro)
+  context/       ThemeContext (modo oscuro), ToastContext
   lib/           Cliente de Supabase
-  constants/     Enumeraciones y colores compartidos
-  utils/         Formatters y validadores (zod)
-  router/        Definición de rutas (react-router-dom)
+  constants/     Mapeo visual de fondos/personas, frases, saludo, colores
+  utils/         Formatters, validadores (zod) y `cn` (clsx + tailwind-merge)
+  router/        Definición de rutas con code-splitting (react-router-dom + React.lazy)
 supabase/
   schema.sql     Esquema completo de la base de datos (tablas, vistas, RLS, seed)
 ```
